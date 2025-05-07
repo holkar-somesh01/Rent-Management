@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const adminApi = createApi({
     reducerPath: 'adminApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000/api/v1/admin', credentials: "include" }),
+    baseQuery: fetchBaseQuery({ baseUrl: `${import.meta.env.VITE_BACKEND_URL}/api/v1/admin`, credentials: "include" }),
     tagTypes: ['Tenant', 'Landlord', 'Payment', 'Property', 'User'],
     endpoints: (builder) => ({
         getAllTenants: builder.query({
