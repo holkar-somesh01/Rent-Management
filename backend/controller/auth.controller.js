@@ -128,9 +128,6 @@ exports.registerUser = asyncHandler(async (req, res) => {
             return res.status(400).json({ message: "Email Already Registered" });
         }
         const documents = []
-
-
-
         if (req.files) {
             const filesArray = Array.isArray(req.files.documents) ? req.files.documents : [req.files.documents];
             for (const file of filesArray) {
@@ -140,7 +137,6 @@ exports.registerUser = asyncHandler(async (req, res) => {
                 documents.push(result.secure_url);
             }
         }
-
         const hashPass = await bcrypt.hash(password, 10);
         const result = await User.create({
             name,
@@ -149,6 +145,53 @@ exports.registerUser = asyncHandler(async (req, res) => {
             mobile,
             documents,
             userId: req.user,
+            role: role,
+        });
+
+        res.json({ message: `${result.role} Register Success`, result })
+    })
+})
+exports.registerLandlord = asyncHandler(async (req, res) => {
+    Upload(req, res, async (err) => {
+        if (err) {
+            return res.status(400).json({ message: "Multer Error", error: err?.message })
+        }
+        const { name, email, password, mobile, role } = req.body;
+        const { isError, error } = checkEmpty({ name, email, password, role })
+        if (isError) {
+            return res.status(400).json({ message: "All Fields Required", error });
+        }
+        if (!validator.isEmail(email)) {
+            return res.status(400).json({ message: "Invalid Email" });
+        }
+        if (!validator.isStrongPassword(password)) {
+            return res.status(400).json({ message: "Provide Strong Password" });
+        }
+        if (mobile && !validator.isMobilePhone(mobile, "en-IN")) {
+            return res.status(400).json({ message: "Invalid Mobile Number" });
+        }
+
+        const isFound = await User.findOne({ email });
+        if (isFound) {
+            return res.status(400).json({ message: "Email Already Registered" });
+        }
+        const documents = []
+        if (req.files) {
+            const filesArray = Array.isArray(req.files.documents) ? req.files.documents : [req.files.documents];
+            for (const file of filesArray) {
+                const result = await cloudinary.uploader.upload(file.path, {
+                    folder: "rent_management/documents",
+                });
+                documents.push(result.secure_url);
+            }
+        }
+        const hashPass = await bcrypt.hash(password, 10);
+        const result = await User.create({
+            name,
+            email,
+            password: hashPass,
+            mobile,
+            documents,
             role: role,
         });
 

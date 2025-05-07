@@ -2,67 +2,71 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useLoginAdminMutation, useLoginUserMutation } from "../redux/apis/authApi";
+import { useRegisterLandlordMutation } from "../redux/apis/authApi";
 import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import UserNavbar from "../pages/User/UserNavbar";
 
 const loginSchema = z.object({
-    username: z.string().email("Invalid email format"),
     password: z.string().min(6, "Password must be at least 6 characters long"),
+    name: z.string().min(2, "Enter Name"),
+    email: z.string().email("Invalid email format"),
+    mobile: z.string().min(10, "Enter Mobile Number"),
+    role: z.string().min(2, "Role is Required"),
 });
 
-const Login = () => {
-    const [role, setRole] = useState("user");
-    const navigate = useNavigate();
+const Register = () => {
+    const [role, setRole] = useState("Landlord")
+    const navigate = useNavigate()
     const { user } = useSelector(state => state.auth)
     const {
         register,
         handleSubmit,
         formState: { errors },
+        setValue,
     } = useForm({
         resolver: zodResolver(loginSchema),
     });
-    const [loginAdmin, { data: adminData, isLoading: isAdminLoading, isSuccess: isAdminSuccess, isError: isAdminError, error: adminError }] = useLoginAdminMutation();
-    const [loginUser, { data: userData, isLoading: isUserLoading, isSuccess: isUserSuccess, isError: isUserError, error: userError }] = useLoginUserMutation();
+
+    const [registerUser, {
+        data: userData,
+        isLoading: isUserLoading,
+        isSuccess: isUserSuccess,
+        isError: isUserError,
+        error: userError
+    }] = useRegisterLandlordMutation()
     const onSubmit = async (data) => {
         try {
-            const loginFn = role === "admin" ? loginAdmin : loginUser;
-            await loginFn(data).unwrap();
+            await registerUser(data).unwrap();
         } catch (error) {
             console.error("Server Error:", error);
         }
     }
-    useEffect(() => {
-        if (user) {
-            switch (user.role) {
-                case "SuperAdmin":
-                    navigate("/superAdmin/dashboard");
-                    break;
-                case "Landlord":
-                    navigate("/landlord");
-                    break;
-                case "Tenant":
-                    navigate("/tenant");
-                    break;
-                case "Manager":
-                    navigate("/manager-dashboard");
-                    break;
-                default:
-                    navigate("/unauthorized");
-            }
-        }
-    }, [user, navigate])
+    // useEffect(() => {
+    //     if (user) {
+    //         switch (user.role) {
+    //             case "SuperAdmin":
+    //                 navigate("/superAdmin/dashboard");
+    //                 break;
+    //             case "Landlord":
+    //                 navigate("/landlord");
+    //                 break;
+    //             case "Tenant":
+    //                 navigate("/tenant");
+    //                 break;
+    //             case "Manager":
+    //                 navigate("/manager-dashboard");
+    //                 break;
+    //             default:
+    //                 navigate("/unauthorized");
+    //         }
+    //     }
+    // }, [user, navigate])
 
     useEffect(() => {
+        setValue("role", role)
         toast.dismiss();
-        if (isAdminSuccess) {
-            toast.success(`Welcome ${adminData?.name || "Admin"}!`, { duration: 3000 });
-            navigate("/superAdmin/dashboard");
-        } else if (isAdminError) {
-            toast.error(adminError?.data?.message || "Admin login failed", { duration: 3000 });
-        }
         if (isUserSuccess) {
             const userRole = userData?.role;
             toast.success(`Welcome ${userData?.name || "User"}!`, { duration: 3000 })
@@ -82,7 +86,7 @@ const Login = () => {
         } else if (isUserError) {
             toast.error(userError?.data?.message || "User login failed", { duration: 3000 });
         }
-    }, [isAdminSuccess, isAdminError, isUserSuccess, isUserError]);
+    }, [isUserSuccess, isUserError]);
 
 
     return (
@@ -90,32 +94,38 @@ const Login = () => {
             <UserNavbar />
             <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
                 <div className="w-full max-w-md bg-white p-6 rounded-xl shadow-md">
-                    <h2 className="text-2xl font-bold text-center text-gray-700">Login</h2>
-                    <div className="flex justify-center my-4">
-                        <button
-                            className={`px-4 py-2 mx-2 rounded-md ${role === "user" ? "bg-blue-600 text-white" : "bg-gray-300"}`}
-                            onClick={() => setRole("user")}
-                        >
-                            User
-                        </button>
-                        <button
-                            className={`px-4 py-2 mx-2 rounded-md ${role === "admin" ? "bg-green-600 text-white" : "bg-gray-300"}`}
-                            onClick={() => setRole("admin")}
-                        >
-                            Admin
-                        </button>
-                    </div>
-
+                    <h2 className="text-2xl font-bold text-center text-gray-700">Create Account</h2>
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                        <div></div>
                         <div>
-                            <label className="block text-gray-700">Email/Mobile</label>
+                            <label className="block text-gray-700">Name</label>
                             <input
                                 type="text"
-                                {...register("username")}
+                                {...register("name")}
                                 className="w-full p-2 border border-gray-300 rounded-md"
-                                placeholder="Enter your email or Mobile"
+                                placeholder="Enter your name"
                             />
-                            {errors.username && <p className="text-red-500 text-sm">{errors.username.message}</p>}
+                            {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+                        </div>
+                        <div>
+                            <label className="block text-gray-700">Email</label>
+                            <input
+                                type="text"
+                                {...register("email")}
+                                className="w-full p-2 border border-gray-300 rounded-md"
+                                placeholder="Enter your email"
+                            />
+                            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+                        </div>
+                        <div>
+                            <label className="block text-gray-700">Mobile</label>
+                            <input
+                                type="number"
+                                {...register("mobile")}
+                                className="w-full p-2 border border-gray-300 rounded-md"
+                                placeholder="Enter your mobile"
+                            />
+                            {errors.mobile && <p className="text-red-500 text-sm">{errors.mobile.message}</p>}
                         </div>
                         <div>
                             <label className="block text-gray-700">Password</label>
@@ -127,28 +137,27 @@ const Login = () => {
                             />
                             {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
                         </div>
-
-                        {isAdminLoading || isUserLoading ? (
+                        {isUserLoading ? (
                             <div className="flex justify-center">
                                 <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                             </div>
                         ) : (
                             <button
                                 type="submit"
-                                disabled={isAdminLoading || isUserLoading}
+                                disabled={isUserLoading}
                                 className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-md transition"
                             >
-                                Login
+                                Register
                             </button>
                         )}
                     </form>
                     <div className="mt-4 text-center">
-                        <p className="text-gray-600">Don't Have an Account</p>
+                        <p className="text-gray-600">Already have an account?</p>
                         <Link
-                            to="/register"
+                            to="/login"
                             className="text-blue-600 hover:text-blue-800 font-semibold transition duration-200"
                         >
-                            Create Account
+                            Login
                         </Link>
                     </div>
                 </div>
@@ -157,4 +166,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default Register

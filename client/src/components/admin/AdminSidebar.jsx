@@ -14,12 +14,12 @@ const AdminSidebar = () => {
                 <Link to="/superAdmin/all-landlords" className="block p-2 rounded hover:bg-gray-200">
                     All Landlords
                 </Link>
-                {/* <Link to="/superAdmin/payment" className="block p-2 rounded hover:bg-gray-200">
+                <Link to="/superAdmin/payment" className="block p-2 rounded hover:bg-gray-200">
                     Payment's
-                </Link> */}
-                {/* <Link to="/superAdmin/properties" className="block p-2 rounded hover:bg-gray-200">
-                    Properties
-                </Link> */}
+                </Link>
+                <Link to="/superAdmin/premium" className="block p-2 rounded hover:bg-gray-200">
+                    Premium User's
+                </Link>
             </nav>
         </aside>
     );

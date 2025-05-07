@@ -35,7 +35,7 @@ const AdminNavbar = () => {
 
             {/* Navigation Links */}
             <div className="flex items-center space-x-6">
-                <Link to="/" className="flex items-center gap-2 text-gray-700 hover:text-blue-600 transition">
+                <Link to="/superAdmin/dashboard" className="flex items-center gap-2 text-gray-700 hover:text-blue-600 transition">
                     <LayoutDashboard size={20} />
                     <span>Dashboard</span>
                 </Link>

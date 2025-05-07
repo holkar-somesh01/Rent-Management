@@ -25,6 +25,8 @@ import TenantDetails from "./components/landlord/TenantDetails";
 import AddTenantPayment from "./pages/landlord/AddTenantPayment";
 import UpdateTenantPayment from "./edit-components/landlord/EditPayment";
 import HomePage from "./pages/User/HomePage";
+import PremiumUser from "./pages/Admin/PremiumUser";
+import Register from "./authentication/Register";
 
 function App() {
   return (
@@ -32,23 +34,10 @@ function App() {
       <Toaster position="top-right" richColors />
       <Router>
         <Routes>
-          {/* <Route path="/properties" element={<PropertyList />} /> */}
-          {/* <Route element={<Protected allowedRoles={['Tenant', 'Landlord']} />}>
-            <Route path="/property/:id" element={<PropertyDetails />} />
-            </Route> */}
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
-          {/* <Route path="/tenant" element={<Protected allowedRoles={["Tenant"]} />}>
-            <Route element={<TenantLayout />}>
-              <Route index element={<TenantDashboard />} />
-              <Route path="payments" element={<LandlordPayment />} />
-              <Route path="profile" element={<LandlordProfile />} />
-              <Route path="properties" element={<LandlordProperties />} />
-              <Route path="tenants" element={<LandlordTenants />} />
-              <Route path="edit-tenants" element={<EditTenants />} />
-            </Route>
-          </Route> */}
           <Route path="/landlord" element={<Protected allowedRoles={["Landlord"]} />}>
             <Route element={<LandlordLayout />}>
               <Route index element={<LandlordDashboard />} />
@@ -78,7 +67,7 @@ function App() {
               <Route path="all-tenants" element={<Tenants />} />
               <Route path="all-landlords" element={<LandLords />} />
               <Route path="payment" element={<Payment />} />
-              <Route path="properties" element={<Properties />} />
+              <Route path="premium" element={<PremiumUser />} />
             </Route>
           </Route>
           <Route path="*" element={<h1>Page Not Found</h1>} />

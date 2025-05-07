@@ -340,7 +340,10 @@ exports.getDashboardData = async (req, res) => {
             .sort({ updatedAt: -1 })
             .limit(10);
 
-        const totalUsers = await User.countDocuments({ isDeleted: false });
+        const totalUsers = await User.countDocuments({
+            isDeleted: false,
+            role: { $in: ["Tenant", "Landlord"] },
+        });
         const totalTenants = await User.countDocuments({ role: "Tenant", isDeleted: false });
         const totalLandlords = await User.countDocuments({ role: "Landlord", isDeleted: false });
         const totalProperties = await Property.countDocuments({ isDeleted: false });

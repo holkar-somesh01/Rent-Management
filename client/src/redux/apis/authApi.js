@@ -50,6 +50,15 @@ export const authApi = createApi({
             invalidatesTags: ["auth"],
             transformResponse: data => data.result
         }),
+        registerLandlord: builder.mutation({
+            query: (userData) => ({
+                url: "/user/register-landlord",
+                method: "POST",
+                body: userData,
+            }),
+            invalidatesTags: ["auth"],
+            transformResponse: data => data.result
+        }),
         loginUser: builder.mutation({
             query: (userData) => ({
                 url: "/user/login",
@@ -85,6 +94,7 @@ export const {
     useRegisterUserMutation,
     useLoginUserMutation,
     useLogoutUserMutation,
+    useRegisterLandlordMutation,
 } = authApi;
 
 

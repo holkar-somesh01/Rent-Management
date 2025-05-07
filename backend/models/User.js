@@ -13,6 +13,7 @@ const UserSchema = new mongoose.Schema(
         payments: { type: [mongoose.Types.ObjectId], ref: "Payment" },
         status: { type: String, enum: ["active", "inactive"], default: "active" },
         isDeleted: { type: Boolean, default: false },
+        isPremium: { type: Boolean, default: false },
     },
     { timestamps: true }
 )

@@ -11,5 +11,6 @@ router
     .post("/tenant/register", LandlordProtected, authController.registerUser)
     .post("/user/login", authController.loginUser)
     .post("/user/logout", authController.logoutUser)
+    .post("/user/register-landlord", authController.registerLandlord)
 
 module.exports = router;

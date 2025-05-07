@@ -69,7 +69,6 @@ exports.getPaymentById = expressAsyncHandler(async (req, res) => {
     if (!payment || payment.isDeleted) {
         return res.status(404).json({ message: "Payment not found" });
     }
-
     res.json({ message: "Payment fetched successfully", payment });
 });
 exports.getMonthlyCollectedRent = async (req, res) => {

@@ -77,7 +77,7 @@ const AddProperties = () => {
     }, [isError, updateError]);
     useEffect(() => {
         if (isSuccess || updateSuccess) {
-            toast.success(`Product ${updateSuccess ? "Update" : "Add"} Success`)
+            toast.success(`Property ${updateSuccess ? "Update" : "Add"} Success`)
         }
     }, [isSuccess, updateSuccess]);
     if (getLoading) return <p>Loading...</p>;
