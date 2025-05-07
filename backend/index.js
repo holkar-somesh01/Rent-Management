@@ -15,7 +15,7 @@ app.use(cors({
 
 app.use(cookieParser())
 app.use(express.json())
-// app.use(express.static("dist"))
+app.use(express.static("dist"))
 
 app.use('/api/v1/auth', require('./routes/auth.routes'))
 app.use('/api/v1/admin', require('./routes/admin.routes'))
