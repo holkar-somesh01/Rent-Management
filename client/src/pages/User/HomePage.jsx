@@ -109,22 +109,44 @@
 
 
 // src/pages/HomePage.tsx
-import React from "react";
+import React, { useState } from "react";
+import { Menu, X } from "lucide-react";
 
 const HomePage = () => {
+    const [isOpen, setIsOpen] = useState(false);
     return (
         <div className="font-sans text-gray-800">
             {/* Header */}
             <header className="bg-white shadow sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
                     <h1 className="text-2xl font-bold text-blue-600">RentManage</h1>
-                    <nav className="space-x-6">
+
+                    {/* Desktop Navigation */}
+                    <nav className="hidden md:flex space-x-6">
                         <a href="#features" className="hover:text-blue-600">Features</a>
                         <a href="#about" className="hover:text-blue-600">About</a>
                         <a href="#contact" className="hover:text-blue-600">Contact</a>
                         <a href="/login" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Login</a>
                     </nav>
+
+                    {/* Mobile Menu Button */}
+                    <button
+                        className="md:hidden text-blue-600"
+                        onClick={() => setIsOpen(!isOpen)}
+                    >
+                        {isOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
                 </div>
+
+                {/* Mobile Navigation */}
+                {isOpen && (
+                    <nav className="md:hidden px-4 pb-4 space-y-2">
+                        <a href="#features" className="block hover:text-blue-600">Features</a>
+                        <a href="#about" className="block hover:text-blue-600">About</a>
+                        <a href="#contact" className="block hover:text-blue-600">Contact</a>
+                        <a href="/login" className="block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Login</a>
+                    </nav>
+                )}
             </header>
 
             {/* Hero Section */}

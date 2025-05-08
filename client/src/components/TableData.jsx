@@ -203,37 +203,6 @@ const TableData = ({
                             ))}
                         </tbody>
                     </table>
-
-                    {/* <div className="mt-6 text-center">
-              <button
-                onClick={() => table.setPageIndex(0)}
-                disabled={!table.getCanPreviousPage()}
-                className="px-4 py-2 mx-2 bg-gray-100 border border-gray-300 rounded-lg cursor-pointer disabled:opacity-50"
-              >
-                {"<<"}
-              </button>
-              <button
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-                className="px-4 py-2 mx-2 bg-gray-100 border border-gray-300 rounded-lg cursor-pointer disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <button
-                onClick={() => table.nextPage()}
-                className="px-4 py-2 mx-2 bg-gray-100 border border-gray-300 rounded-lg cursor-pointer disabled:opacity-50"
-              >
-                Next
-              </button>
-              <button
-                onClick={() => table.setPageIndex(totalPages ? totalPages - 1 : 0)}
-                disabled={!table.getCanNextPage()}
-                className="px-4 py-2 mx-2 bg-gray-100 border border-gray-300 rounded-lg cursor-pointer disabled:opacity-50"
-              >
-                {">>"}
-              </button>
-            </div> */}
-
                     <div className="mt-6 text-center">
                         {generatePaginationButtons()}
                     </div>

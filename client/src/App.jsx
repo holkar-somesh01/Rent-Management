@@ -27,6 +27,8 @@ import UpdateTenantPayment from "./edit-components/landlord/EditPayment";
 import HomePage from "./pages/User/HomePage";
 import PremiumUser from "./pages/Admin/PremiumUser";
 import Register from "./authentication/Register";
+import Plans from "./pages/premium/Plans";
+import PremiumPayment from "./pages/premium/PremiumPayment";
 
 function App() {
   return (
@@ -38,6 +40,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route path="/plans" element={<Plans />} />
+          <Route path="/premium-payment" element={<PremiumPayment />} />
           <Route path="/landlord" element={<Protected allowedRoles={["Landlord"]} />}>
             <Route element={<LandlordLayout />}>
               <Route index element={<LandlordDashboard />} />

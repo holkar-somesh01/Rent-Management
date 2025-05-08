@@ -22,6 +22,7 @@ app.use('/api/v1/admin', require('./routes/admin.routes'))
 app.use('/api/v1/payment', require('./routes/payment.routes'))
 app.use('/api/v1/landlord', require('./routes/landlord.routes'))
 app.use('/api/v1/user', require('./routes/user.routes'))
+app.use('/api/v1/premium', require('./routes/premium.routes'))
 
 app.use("*", (req, res) => {
     res.sendFile(path.join(__dirname, "dist", "index.html"))
