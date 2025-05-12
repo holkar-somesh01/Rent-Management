@@ -12,7 +12,8 @@ router
     .get("/get-landlord-property", LandlordProtected, landlordController.getLandlordProperty)
     .get("/get-booked-property/:id", LandlordProtected, landlordController.getBookedProperty)
     .get("/get-payment", LandlordProtected, landlordController.GetAllPayment)
-    .get("/dashboard", landlordController.getDashboardStats)
+    // .get("/dashboard", landlordController.getDashboardStats)
+    .get("/dashboard", LandlordProtected, landlordController.getLandlordDashboard)
     .get("/dashboard-recent-activity", landlordController.getDashboardData)
     .get("/get-all-tenants", LandlordProtected, landlordController.getAllTenant)
 

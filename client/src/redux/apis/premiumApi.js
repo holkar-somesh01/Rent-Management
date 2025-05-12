@@ -6,14 +6,25 @@ export const premiumApi = createApi({
     tagTypes: ["premium"],
     endpoints: (builder) => {
         return {
-            getUsers: builder.query({
+            getPremiumUsers: builder.query({
                 query: () => {
                     return {
-                        url: "/",
+                        url: "/Get-Premium-Users",
                         method: "GET"
                     }
                 },
-                providesTags: ["premium"]
+                providesTags: ["premium"],
+                transformResponse: data => data.result
+            }),
+            LandlordPremiumDetails: builder.query({
+                query: () => {
+                    return {
+                        url: "/Landlord-Premium-Details",
+                        method: "GET"
+                    }
+                },
+                providesTags: ["premium"],
+                transformResponse: data => data.result
             }),
             createPremiumOrder: builder.mutation({
                 query: userData => {
@@ -40,4 +51,9 @@ export const premiumApi = createApi({
     }
 })
 
-export const { useGetUsersQuery, useVerifyPremiumPaymentMutation, useCreatePremiumOrderMutation, } = premiumApi
+export const {
+    useLandlordPremiumDetailsQuery,
+    useGetPremiumUsersQuery,
+    useVerifyPremiumPaymentMutation,
+    useCreatePremiumOrderMutation,
+} = premiumApi

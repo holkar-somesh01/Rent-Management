@@ -29,6 +29,7 @@ import PremiumUser from "./pages/Admin/PremiumUser";
 import Register from "./authentication/Register";
 import Plans from "./pages/premium/Plans";
 import PremiumPayment from "./pages/premium/PremiumPayment";
+import PurchasePlans from "./components/landlord/PurchasePlans";
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
               <Route path="tenants" element={<LandlordTenants />} />
               <Route path="tenant-details/:id" element={<TenantDetails />} />
               <Route path="edit-tenants" element={<EditTenants />} />
+              <Route path="purchase" element={<PurchasePlans />} />
             </Route>
           </Route>
           <Route path="/superAdmin" element={<Protected allowedRoles={["SuperAdmin"]} />}>

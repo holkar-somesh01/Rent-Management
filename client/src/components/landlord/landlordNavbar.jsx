@@ -3,9 +3,13 @@ import React, { useEffect } from 'react';
 import { useLogoutUserMutation } from '../../redux/apis/authApi';
 import { toast } from 'sonner';
 import UpgradeToPremium from './UpgradeToPremium';
+import { useSelector } from 'react-redux';
+import { useGetAllTenantsQuery } from '../../redux/apis/adminApi';
 
 const LandlordNavbar = () => {
-    const [LogoutLandlord, { isSuccess, isError, error, isLoading }] = useLogoutUserMutation();
+    const [LogoutLandlord, { isSuccess, isError, error, isLoading }] = useLogoutUserMutation()
+    const { user } = useSelector(state => state.auth)
+    const { data, isLoading: isLoadingTenants, isError: isErrorTenants } = useGetAllTenantsQuery({ userId: user._id })
 
     useEffect(() => {
         if (isSuccess) {
@@ -14,25 +18,24 @@ const LandlordNavbar = () => {
         if (isError) {
             toast.error("Logout failed! Please try again.");
         }
-    }, [isSuccess, isError]);
-
+    }, [isSuccess, isError])
     const handleLogout = async () => {
         try {
             await LogoutLandlord().unwrap();
         } catch (err) {
             console.error("Logout error:", err);
         }
-    };
+    }
 
     return (
         <>
-            <div className="w-full fixed top-0  left-0 bg-orange-500 text-white text-sm py-2 px-4 flex justify-between items-center z-50 shadow-md">
+            {data?.length > 4 && <div className="w-full pb-10 fixed top-0  left-0 bg-orange-500 text-white text-sm py-2 px-4 flex justify-between items-center z-50 shadow-md">
                 <p className="font-semibold">
                     🚀 Unlock more features – Upgrade to <span className="underline">Premium</span> now!
                 </p>
                 <UpgradeToPremium />
-            </div>
-            <nav className="flex pt-10 justify-between items-center">
+            </div>}
+            <nav className={`flex justify-between items-center ${data?.length > 4 ? "pt-10" : ""}`}>
                 <h1 className="text-xl font-bold text-gray-900">Landlord Dashboard</h1>
                 <div className="flex items-center gap-4">
                     <button className="relative text-gray-600 hover:text-blue-600 transition">

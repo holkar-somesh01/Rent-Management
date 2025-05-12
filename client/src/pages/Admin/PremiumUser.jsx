@@ -1,111 +1,66 @@
-import React, { useEffect, useState } from 'react'
-import TableData from '../../components/TableData'
-import { useSelector } from 'react-redux';
-import { useDeletePropertiesMutation, useGetPropertiesQuery } from '../../redux/apis/adminApi';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
+import React, { useEffect, useState } from 'react';
+import TableData from '../../components/TableData';
+import { useGetPremiumUsersQuery } from '../../redux/apis/premiumApi';
 
 const PremiumUser = () => {
-    const { user } = useSelector((state) => state.auth);
-    const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
-    const [sorting, setSorting] = useState([]);
-    const [globalFilter, setGlobalFilter] = useState("");
+    const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 })
+    const [sorting, setSorting] = useState([])
+    const [globalFilter, setGlobalFilter] = useState("")
+    const { data } = useGetPremiumUsersQuery()
 
-    const [DeleteProperty, { isSuccess: DeleteIsSuccess, isLoading: DeleteIsLoading, isError: DeleteIsError, error: DeleteError }] = useDeletePropertiesMutation();
-    const { data, isSuccess, isLoading, isError, error } = useGetPropertiesQuery({ id: user._id });
-
-    const navigate = useNavigate();
-    const [properties, setProperties] = useState([]);
+    const [properties, setProperties] = useState([])
 
     useEffect(() => {
-        if (data && data.data) {
-            const formattedProperties = data.data.map((property) => ({
-                _id: property._id,
-                name: property.name,
-                type: property.type,
-                location: property.location,
-                size: property.size,
-                rentPrice: property.rentPrice,
-                landlordName: property.landlord.name,
-                isRented: property.isRented,
+        if (data && data.length > 0) {
+            const formattedUsers = data.map((user) => ({
+                _id: user._id,
+                name: user.userId.name,
+                email: user.userId.email,
+                planType: user.planType,
+                price: user.price,
+                paymentStatus: user.paymentStatus,
+                startDate: new Date(user.startDate).toLocaleDateString(),
+                endDate: new Date(user.endDate).toLocaleDateString(),
+                paymentMethod: user.paymentMethod,
             }));
-            setProperties(formattedProperties);
+            setProperties(formattedUsers);
         }
-    }, [data]);
-
-    useEffect(() => {
-        if (DeleteIsSuccess) {
-            toast.success("Property deleted successfully");
-        } else if (DeleteIsError) {
-            toast.error(DeleteError?.data?.message || "Failed to delete property");
-        }
-    }, [DeleteIsSuccess, DeleteIsError, DeleteError]);
-
-    const handleDelete = (propertyId) => {
-        if (window.confirm("Are you sure you want to delete this property?")) {
-            DeleteProperty(propertyId)
-                .unwrap()
-                .then(() => {
-                    setProperties(properties.filter((property) => property._id !== propertyId));
-                })
-                .catch((error) => {
-                    console.error("Failed to delete property: ", error);
-                });
-        }
-    };
+    }, [data])
 
     const columns = [
-        { accessorKey: "name", header: "Property Name" },
-        { accessorKey: "type", header: "Type" },
-        { accessorKey: "location", header: "Location" },
-        { accessorKey: "size", header: "Size" },
-        { accessorKey: "rentPrice", header: "Rent (₹)" },
-        { accessorKey: "landlordName", header: "Landlord" },
-        {
-            accessorKey: "isRented",
-            header: "Rented?",
-            cell: (row) => (row.getValue() ? "Yes" : "No"),
-        },
-        {
-            header: "Actions",
-            cell: (row) => (
-                <div>
-                    <button
-                        onClick={() => navigate(`/landlord/update-property/${row.row.original._id}`)}
-                        className="px-3 py-1 mb-2 text-white bg-blue-500 rounded hover:bg-blue-600"
-                    >
-                        Edit
-                    </button>
-                    <br />
-                    <button
-                        onClick={() => handleDelete(row.row.original._id)}
-                        className="px-3 py-1 text-white bg-red-500 rounded hover:bg-red-600"
-                    >
-                        {DeleteIsLoading ? "Loading..." : "Delete"}
-                    </button>
-                </div>
-            ),
-        },
-    ];
+        { accessorKey: "name", header: "User Name" },
+        { accessorKey: "email", header: "Email" },
+        { accessorKey: "planType", header: "Plan Type" },
+        { accessorKey: "price", header: "Price (₹)" },
+        { accessorKey: "paymentStatus", header: "Payment Status" },
+        { accessorKey: "startDate", header: "Start Date" },
+        { accessorKey: "endDate", header: "End Date" },
+        { accessorKey: "paymentMethod", header: "Payment Method" },
+    ]
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-200 pt-10">
-            <div>
-                <TableData
-                    data={properties}
-                    columns={columns}
-                    enableSorting={true}
-                    enableGlobalFilter={true}
-                    initialPagination={pagination}
-                    totalRows={properties.length}
-                    onPaginationChange={setPagination}
-                    onSortingChange={setSorting}
-                    onGlobalFilterChange={setGlobalFilter}
-                    totalPages={Math.ceil(properties.length / pagination.pageSize)}
-                />
+        <div>
+            <div className="max-w-screen-xl mx-auto mt-6 p-4 bg-white rounded-lg shadow-lg">
+                <div className="pt-20 flex justify-center items-center ml-10">
+                    <h2 className="text-3xl font-bold text-gray-800">Premium Users and Payments</h2>
+                </div>
+                <div className='flex justify-center items-center mt-6'>
+                    <TableData
+                        data={properties}
+                        columns={columns}
+                        enableSorting={true}
+                        enableGlobalFilter={true}
+                        initialPagination={pagination}
+                        totalRows={properties.length}
+                        onPaginationChange={setPagination}
+                        onSortingChange={setSorting}
+                        onGlobalFilterChange={setGlobalFilter}
+                        totalPages={Math.ceil(properties.length / pagination.pageSize)}
+                    />
+                </div>
             </div>
         </div>
-    )
+    );
 }
 
 export default PremiumUser

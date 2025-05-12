@@ -12,7 +12,6 @@ exports.getAllTenants = expressAsyncHandler(async (req, res) => {
     const skip = (page - 1) * limit;
     const filter = req.query.filter || '';
     const { userId } = req.query
-    console.log(userId)
     let filterQuery = { isDeleted: false, userId: userId, role: "Tenant" }
     const Tenants = await User.find(filterQuery)
         .populate('userId')
@@ -119,8 +118,6 @@ exports.AddProperties = expressAsyncHandler(async (req, res) => {
                 console.log("Multer Error:", err);
                 return res.status(400).json({ message: "Multer Error", error: err?.message });
             }
-            console.log(req.body)
-            console.log(req.file)
             const { name, location, size, rentPrice, isRented, type } = req.body;
             const { isError, error } = checkEmpty({ name, location, size, rentPrice, isRented, type });
             if (isError) {
@@ -161,7 +158,6 @@ exports.AddProperties = expressAsyncHandler(async (req, res) => {
 })
 exports.GetPropertyDetails = expressAsyncHandler(async (req, res) => {
     const { PropertyId } = req.params
-    console.log(PropertyId)
     const result = await Property.findById(PropertyId)
     res.json({ message: "Details Fetch Success", result })
 })
@@ -241,8 +237,6 @@ exports.SoftDeleteProperty = expressAsyncHandler(async (req, res) => {
 exports.changeStatus = expressAsyncHandler(async (req, res) => {
     const { id } = req.params
     const { status } = req.body
-    console.log(status)
-
     if (!id) {
         return res.status(400).json({ message: "User id is Required." })
     }

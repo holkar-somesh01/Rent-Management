@@ -31,22 +31,22 @@ const LandlordProfile = () => {
             {data && <div className="p-6 space-y-6">
                 <h2 className="text-2xl font-bold text-gray-800">Landlord Profile</h2>
                 <div className="grid grid-cols-2 gap-4">
-                    <p><strong>ID:</strong> {data._id}</p>
-                    <p><strong>Name:</strong> {data.name}</p>
-                    <p><strong>Email:</strong> {data.email}</p>
-                    <p><strong>Mobile:</strong> {data.mobile}</p>
-                    <p><strong>Role:</strong> {data.role}</p>
-                    <p><strong>Status:</strong> {data.status}</p>
+                    <p><strong>ID:</strong> {data?._id}</p>
+                    <p><strong>Name:</strong> {data?.name}</p>
+                    <p><strong>Email:</strong> {data?.email}</p>
+                    <p><strong>Mobile:</strong> {data?.mobile}</p>
+                    <p><strong>Role:</strong> {data?.role}</p>
+                    <p><strong>Status:</strong> {data?.status}</p>
                 </div>
 
                 <div className="mt-6">
                     <h3 className="text-xl font-semibold text-blue-600">Admin Account Details</h3>
                     <div className="grid grid-cols-2 gap-4">
-                        <p><strong>Admin ID:</strong> {data.userId._id}</p>
-                        <p><strong>Admin Name:</strong> {data.userId.name}</p>
-                        <p><strong>Admin Email:</strong> {data.userId.email}</p>
-                        <p><strong>Admin Mobile:</strong> {data.userId.mobile}</p>
-                        <p><strong>Admin Role:</strong> {data.userId.role}</p>
+                        <p><strong>Admin ID:</strong> {data?.userId?._id}</p>
+                        <p><strong>Admin Name:</strong> {data?.userId?.name}</p>
+                        <p><strong>Admin Email:</strong> {data?.userId?.email}</p>
+                        <p><strong>Admin Mobile:</strong> {data?.userId?.mobile}</p>
+                        <p><strong>Admin Role:</strong> {data?.userId?.role}</p>
                     </div>
                 </div>
 

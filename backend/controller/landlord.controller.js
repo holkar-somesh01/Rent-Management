@@ -9,6 +9,9 @@ const RentedProperty = require('../models/RentedProperty')
 const Property = require('../models/Property')
 const Payment = require('../models/Payment')
 const { default: mongoose } = require('mongoose')
+const cron = require('node-cron');
+const sendEmail = require('../utils/email')
+
 
 
 exports.getLandlordProfile = expressAsyncHandler(async (req, res) => {
@@ -139,32 +142,26 @@ exports.getLandlordProperty = expressAsyncHandler(async (req, res) => {
     res.json({ message: "Property Fetch Success", result })
 })
 exports.registerTenant = expressAsyncHandler(async (req, res) => {
-    const session = await mongoose.startSession();
-    session.startTransaction();
-
+    const session = await mongoose.startSession()
+    session.startTransaction()
     try {
         await new Promise((resolve, reject) => {
             Upload(req, res, (err) => (err ? reject(err) : resolve()));
-        });
-
+        })
         const {
             name, email, password, mobile, role, property, rentAmount,
             leaseStart, leaseEnd, amount, paymentDate,
             paymentStatus, paymentMethod, transactionId, amountPaid
-        } = req.body;
-
+        } = req.body
         const { isError, error } = checkEmpty({
             name, email, password, role, property, rentAmount, leaseStart
-        });
-
+        })
         if (isError) throw new Error(error || "All Fields Required");
         if (!validator.isEmail(email)) throw new Error("Invalid Email");
         if (!validator.isStrongPassword(password)) throw new Error("Provide Strong Password");
         if (mobile && !validator.isMobilePhone(mobile, "en-IN")) throw new Error("Invalid Mobile Number");
-
-        if (await User.findOne({ email })) throw new Error("Email Already Registered");
-
-        const documents = [];
+        if (await User.findOne({ email })) throw new Error("Email Already Registered")
+        const documents = []
         if (req.files) {
             const filesArray = Array.isArray(req.files.documents) ? req.files.documents : [req.files.documents];
             const uploadPromises = filesArray.map(file =>
@@ -173,28 +170,26 @@ exports.registerTenant = expressAsyncHandler(async (req, res) => {
             const results = await Promise.all(uploadPromises);
             documents.push(...results.map(result => result.secure_url));
         }
-
         const hashPass = await bcrypt.hash(password, 10);
         const [user] = await User.create([{
             name, email, password: hashPass, mobile, documents,
             userId: req.user, role
-        }], { session });
+        }], { session })
 
-        let propertyRent;
+        let propertyRent
         if (amount && paymentDate && paymentStatus && paymentMethod) {
             const [payment] = await Payment.create([{
                 tenantId: user._id, amount, paymentDate,
                 paymentStatus, paymentMethod, transactionId, amountPaid
-            }], { session });
-
+            }], { session })
             propertyRent = await RentedProperty.create([{
                 property, tenantId: user._id, rentAmount,
                 leaseStart, leaseEnd, payments: [payment._id]
-            }], { session });
-            await User.findByIdAndUpdate(user._id, { $push: { payments: payment._id } }, { session });
+            }], { session })
+            await User.findByIdAndUpdate(user._id, { $push: { payments: payment._id, } }, { session })
         } else {
             propertyRent = await RentedProperty.create([{
-                property, tenantId: user._id, rentAmount, leaseStart, leaseEnd
+                property, tenantId: user._id, rentAmount, leaseStart, leaseEnd,
             }], { session });
         }
         await session.commitTransaction();
@@ -375,5 +370,100 @@ exports.getDashboardData = async (req, res) => {
         res.status(500).json({ message: "Failed to load dashboard data", error });
     }
 };
+exports.getLandlordDashboard = async (req, res) => {
+    try {
+        const landlordId = req.user
+
+        // Fetch landlord properties
+        const properties = await Property.find({ landlord: landlordId, isDeleted: false }).exec();
+
+        // Fetch rented properties for the landlord
+        const rentedProperties = await RentedProperty.find({ property: { $in: properties.map(prop => prop._id) }, isDeleted: false }).exec();
+
+        // Fetch payments for the rented properties
+        const payments = await Payment.find({ propertyId: { $in: rentedProperties.map(rent => rent.property) }, tenantId: { $in: rentedProperties.map(rent => rent.tenantId) }, isDeleted: false }).exec();
+
+        // Aggregate stats
+        const totalProperties = properties.length;
+        const totalRentedProperties = rentedProperties.length;
+        const totalPayments = payments.reduce((acc, payment) => acc + payment.amountPaid, 0);
+        const pendingPayments = payments.filter(payment => payment.paymentStatus === 'pending').length;
+
+        // Send response
+        res.json({
+            message: "Fetch Success", result: {
+                totalProperties,
+                totalRentedProperties,
+                totalPayments,
+                pendingPayments,
+                properties,
+                rentedProperties,
+                payments
+            }
+        })
+    } catch (error) {
+        console.error("Error fetching landlord dashboard data:", error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+const sendPaymentReminder = async () => {
+    try {
+        console.log("Fetching pending payments...");
+        const pendingPayments = await Payment.find({ paymentStatus: "pending", isDeleted: false })
+            .populate("tenantId", "name email")
+            .populate("propertyId", "name location");
+
+        console.log('Pending Payments:', pendingPayments);  // Debug: Check if we are getting data
+
+        for (const payment of pendingPayments) {
+            const tenant = payment.tenantId;
+            const property = payment.propertyId;
+
+            if (!tenant || !property) {
+                console.log("Skipping payment reminder for invalid tenant or property");
+                continue;
+            }
+
+            const message = `
+                <p>Dear ${tenant.name},</p>
+                <p>This is a friendly reminder that your rent payment for the property <strong>${property.name}</strong> is still pending. Please make the payment as soon as possible to avoid any issues.</p>
+                <p>Thank you!</p>
+            `;
+
+            console.log(`Sending reminder to ${tenant.email} for ${property.name}`);
+            const emailSent = await sendEmail({
+                subject: `Reminder: Pending Rent Payment for ${property.name}`,
+                to: tenant.email,
+                message: message,
+            });
+
+            if (emailSent) {
+                console.log(`Reminder sent to ${tenant.name} for property ${property.name}`);
+            } else {
+                console.log(`Failed to send reminder to ${tenant.name}`);
+            }
+        }
+    } catch (error) {
+        console.error('Error sending payment reminders:', error.message);
+    }
+}
+// sendPaymentReminder()
+
+// // Schedule the cron job to run at midnight on the last day of every month
+// cron.schedule('59 23 28-31 * *', async () => {
+//     const today = new Date();
+//     if (today.getDate() === new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate()) {
+//         console.log('Running monthly payment reminder job...');
+//         await sendPaymentReminder();
+//     }
+// }, {
+//     scheduled: true,
+//     timezone: 'Asia/Kolkata'
+// });
+
+
+
+
 
 //  how to minimize Latency  of request 

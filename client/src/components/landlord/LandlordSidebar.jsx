@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Home, Building, CreditCard, User, Menu, Users } from "lucide-react";
+import { Home, Building, CreditCard, User, Menu, Users, Crown } from "lucide-react";
 import { useState } from "react";
 
 const LandlordSidebar = () => {
@@ -30,6 +30,14 @@ const LandlordSidebar = () => {
                 <Link to="/landlord/add-tenants" className="flex items-center gap-2 p-2 hover:bg-gray-700 rounded-md">
                     <Users size={20} />
                     <span>Add Tenant's</span>
+                </Link>
+                <Link to="/plans" className="flex items-center gap-2 p-2 hover:bg-gray-700 rounded-md">
+                    <Crown size={20} />
+                    <span>Upgrade Plan</span>
+                </Link>
+                <Link to="/landlord/purchase" className="flex items-center gap-2 p-2 hover:bg-gray-700 rounded-md">
+                    <Crown size={20} />
+                    <span>Purchase Plan's</span>
                 </Link>
             </nav>
         </div>

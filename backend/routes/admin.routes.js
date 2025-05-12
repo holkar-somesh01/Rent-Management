@@ -11,7 +11,7 @@ router
     .get("/find-property-details/:PropertyId", adminController.GetPropertyDetails)
     // .post("/add-properties", adminController.AddProperties)
     .post("/add-properties", LandlordProtected, adminController.AddProperties)
-    .get("/find-users-details/:id", adminProtected, adminController.FindById)
+    .get("/find-users-details/:id", adminController.FindById)
     .put("/update-properties/:id", adminController.UpdateProperty)
     .put("/change-status/:id", adminController.changeStatus)
     .delete("/delete-properties/:id", adminController.SoftDeleteProperty)

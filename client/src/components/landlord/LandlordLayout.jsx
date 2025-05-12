@@ -1,12 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import LandlordSidebar from './LandlordSidebar';
 import LandlordNavbar from './landlordNavbar';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { Menu } from 'lucide-react';
+import { useLogoutUserMutation } from '../../redux/apis/authApi';
+import { useGetLandlordPropertyQuery } from '../../redux/apis/landlordApi';
 
 const LandlordLayout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
+    const navigate = useNavigate()
+    const { data, isSuccess, isError, error, isLoading } = useGetLandlordPropertyQuery()
+    const [LogoutLandlord, { isSuccess: isSuccessLogout, isError: isErrorLogout, error: errorLogout, isLoading: isLoadingLogout }] = useLogoutUserMutation()
+    useEffect(() => {
+        if (isError) {
+            if (error?.status === 401) {
+                LogoutLandlord()
+                navigate('/login')
+            }
+        }
+    }, [isError])
     useEffect(() => {
         const mediaQuery = window.matchMedia("(min-width: 1024px)");
 
