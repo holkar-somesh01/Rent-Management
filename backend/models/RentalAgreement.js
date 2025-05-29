@@ -10,10 +10,7 @@ const rentalAgreementSchema = new mongoose.Schema(
         monthlyRent: { type: Number, required: true },
         contractRenewalDate: { type: Date, required: true },
         status: { type: String, enum: ["active", "expired"], default: "active" },
-        isDeleted: {
-            type: Boolean,
-            default: false,
-        },
+        isDeleted: { type: Boolean, default: false },
     },
     { timestamps: true }
 );
