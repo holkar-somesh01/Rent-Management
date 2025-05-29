@@ -29,7 +29,7 @@ const LandlordNavbar = () => {
 
     return (
         <>
-            {data?.length > 4 && <div className="w-full pb-10 fixed top-0  left-0 bg-orange-500 text-white text-sm py-2 px-4 flex justify-between items-center z-50 shadow-md">
+            {data?.length <= 5 && <div className="w-full pb-10 fixed top-0  left-0 bg-orange-500 text-white text-sm py-2 px-4 flex justify-between items-center z-50 shadow-md">
                 <p className="font-semibold">
                     🚀 Unlock more features – Upgrade to <span className="underline">Premium</span> now!
                 </p>

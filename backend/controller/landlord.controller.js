@@ -218,7 +218,7 @@ exports.getBookedProperty = expressAsyncHandler(async (req, res) => {
     }
 })
 exports.GetAllPayment = expressAsyncHandler(async (req, res) => {
-    const result = await Payment.find().populate("tenantId").populate("propertyId")
+    const result = await Payment.find({ tenantId: req.user }).populate("tenantId").populate("propertyId")
     res.json({ message: "Payment Fetch Success", result })
 })
 exports.getDashboardStats = async (req, res) => {
