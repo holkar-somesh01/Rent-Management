@@ -8,9 +8,6 @@ const AdminSidebar = () => {
                 <Link to="/superAdmin/superAdmin-register" className="block p-2 rounded hover:bg-gray-200">
                     Register Landlord's
                 </Link>
-                {/* <Link to="/superAdmin/all-tenants" className="block p-2 rounded hover:bg-gray-200">
-                    All Tenants
-                </Link> */}
                 <Link to="/superAdmin/all-landlords" className="block p-2 rounded hover:bg-gray-200">
                     All Landlords
                 </Link>

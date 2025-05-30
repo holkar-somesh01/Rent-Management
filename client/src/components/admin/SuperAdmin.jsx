@@ -34,7 +34,6 @@ const SuperAdmin = () => {
     return (
         <div className="min-h-screen mt-20 p-6 bg-gray-50">
             <h1 className="text-3xl font-bold mb-6 text-center text-blue-700">Super Admin Dashboard</h1>
-            {/* Stats */}
             <div className="flex flex-wrap gap-4 justify-center mb-10">
                 <StatCard title="Total Users" value={stats?.totalUsers} />
                 <StatCard title="Tenants" value={stats?.totalTenants} />
@@ -42,7 +41,6 @@ const SuperAdmin = () => {
                 <StatCard title="Properties" value={stats?.totalProperties} />
             </div>
 
-            {/* Recent & Pending Payments */}
             <div className="grid md:grid-cols-2 gap-6 mb-10">
                 <div className="bg-white rounded-xl p-4 shadow">
                     <h2 className="text-xl font-semibold mb-3 text-gray-800">Recent Payments</h2>

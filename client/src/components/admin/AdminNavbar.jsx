@@ -28,12 +28,9 @@ const AdminNavbar = () => {
 
     return (
         <nav className="flex justify-between items-center px-4">
-            {/* Brand Logo */}
             <Link to="/superAdmin/dashboard" className="text-2xl font-bold text-blue-600 tracking-wide">
                 SuperAdmin<span className="text-gray-800">Panel</span>
             </Link>
-
-            {/* Navigation Links */}
             <div className="flex items-center space-x-6">
                 <Link to="/superAdmin/dashboard" className="flex items-center gap-2 text-gray-700 hover:text-blue-600 transition">
                     <LayoutDashboard size={20} />
@@ -44,7 +41,6 @@ const AdminNavbar = () => {
                     <span>Settings</span>
                 </Link>
 
-                {/* Logout Button */}
                 <button
                     onClick={handleLogout}
                     className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg transition duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
