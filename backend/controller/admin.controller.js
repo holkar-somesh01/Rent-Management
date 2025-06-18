@@ -195,7 +195,7 @@ exports.UpdateProperty = expressAsyncHandler(async (req, res) => {
                 await cloudinary.uploader.destroy(publicId);
             }
         }
-        const images = [];
+        const images = []
         if (req.files && req.files.images) {
             for (const file of req.files.images) {
                 const uploadedImage = await cloudinary.uploader.upload(file.path, {
